@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculator</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: #1a1a2e;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .calculator {
+      background: #16213e;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      width: 320px;
+    }
+    #display {
+      width: 100%;
+      height: 70px;
+      font-size: 2rem;
+      text-align: right;
+      padding: 12px;
+      margin-bottom: 16px;
+      border: none;
+      border-radius: 8px;
+      background: #0f3460;
+      color: #fff;
+      outline: none;
+    }
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    .buttons button {
+      height: 56px;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #0f3460;
+      color: #fff;
+      transition: background 0.2s;
+    }
+    .buttons button:hover { background: #e94560; }
+    .buttons button.operator { background: #533483; }
+    .buttons button.operator:hover { background: #e94560; }
+    .buttons button.clear { background: #e94560; }
+    .buttons button.equals { background: #0f3460; grid-column: span 2; }
+  </style>
+</head>
+<body>
+  <div class="calculator">
+    <input type="text" id="display" readonly>
+    <div class="buttons">
+      <button class="clear" onclick="clearDisplay()">C</button>
+      <button class="operator" onclick="appendOperation('/')">/</button>
+      <button class="operator" onclick="appendOperation('*')">×</button>
+      <button class="operator" onclick="appendOperation('-')">−</button>
+      <button onclick="appendNumber('7')">7</button>
+      <button onclick="appendNumber('8')">8</button>
+      <button onclick="appendNumber('9')">9</button>
+      <button class="operator" onclick="appendOperation('+')">+</button>
+      <button onclick="appendNumber('4')">4</button>
+      <button onclick="appendNumber('5')">5</button>
+      <button onclick="appendNumber('6')">6</button>
+      <button onclick="appendNumber('1')">1</button>
+      <button onclick="appendNumber('2')">2</button>
+      <button onclick="appendNumber('3')">3</button>
+      <button onclick="appendNumber('0')">0</button>
+      <button onclick="appendNumber('.')">.</button>
+      <button class="equals" onclick="calculate()">=</button>
+    </div>
+  </div>
+
+  <script>
+    let currentInput = '';
+    let previousInput = '';
+    let currentOperation = '';
+
+    function appendNumber(num) {
+      currentInput += num;
+      document.getElementById('display').value =
+        `${previousInput} ${currentOperation} ${currentInput}`;
+    }
+
+    function appendOperation(op) {
+      if (currentInput === '') return;
+      if (previousInput !== '') calculate();
+      currentOperation = op;
+      previousInput = currentInput;
+      currentInput = '';
+      document.getElementById('display').value =
+        `${previousInput} ${currentOperation}`;
+    }
+
+    function calculate() {
+      if (previousInput === '' || currentInput === '') return;
+      let prev = parseFloat(previousInput);
+      let curr = parseFloat(currentInput);
+      let result;
+
+      switch (currentOperation) {
+        case '+': result = prev + curr; break;
+        case '-': result = prev - curr; break;
+        case '*': result = prev * curr; break;
+        case '/':
+          if (curr === 0) { alert("Cannot divide by zero"); return; }
+          result = prev / curr; break;
+        default: return;
+      }
+
+      currentInput = result.toString();
+      currentOperation = '';
+      previousInput = '';
+      document.getElementById('display').value = currentInput;
+    }
+
+    function clearDisplay() {
+      currentInput = '';
+      previousInput = '';
+      currentOperation = '';
+      document.getElementById('display').value = '';
+    }
+  </script>
+</body>
+</html>
